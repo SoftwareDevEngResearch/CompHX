@@ -9,6 +9,9 @@ def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_o
     del_t_2 = temp_hot_out - temp_cold_in
     
     return (del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)
+
+def test_lmtd_temp_counter1():
+    assert log_mean_temp_diff_counter(100,85,30,55) == pytest.approx(49.83)
     
 
 def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
@@ -17,6 +20,9 @@ def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_
     del_t_2 = temp_hot_out - temp_cold_out
     
     return (del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)
+
+def test_lmtd_temp_parallel1():
+    assert log_mean_temp_diff_parallel(100,85,30,55) == pytest.approx(47.21)
 
 def q_lmtd_counter(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
     
