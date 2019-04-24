@@ -3,6 +3,19 @@ python:
 - "3.6"
 
 install:
-        - pip install -r requirements.txt
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
+  fi
+- bash miniconda.sh -b -p $HOME/miniconda
+- rm miniconda.sh
+- source $HOME/miniconda/etc/profile.d/conda.sh && conda activate
+- conda config --set always_yes yes --set changeps1 no
+- conda update -q conda
+- conda update -q --all
+- conda config --append channels conda-forge
+- conda env create -qf test-environment.yaml;
+- source activate test-environment;
 script:
-        - pytest -vv --cov=./
+- pytest -vv --cov=./;
