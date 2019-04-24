@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
+    """ Computes the LMTD for a counter-current HX """
     
     del_t_1 = temp_hot_in - temp_cold_out
     del_t_2 = temp_hot_out - temp_cold_in
@@ -17,6 +18,7 @@ def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_o
     
 
 def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
+    """ Computes the LMTD for a parallel HX """
     
     del_t_1 = temp_hot_in - temp_cold_in
     del_t_2 = temp_hot_out - temp_cold_out
