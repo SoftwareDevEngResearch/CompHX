@@ -1,0 +1,8 @@
+#
+###### requirements.txt ######
+#
+###### Requirements with Version Specifiers ######
+pytest
+pytest-cov
+numpy
+#
