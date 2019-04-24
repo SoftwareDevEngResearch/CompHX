@@ -18,4 +18,4 @@ install:
 - conda env create -qf test-environment.yaml;
 - source activate test-environment;
 script:
-- pytest -vv --cov=./;
+- pytest -vv --cov=./
