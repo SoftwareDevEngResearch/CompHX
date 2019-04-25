@@ -1,8 +1,11 @@
 #
 ###### requirements.txt ######
 #
-###### Requirements with Version Specifiers ######
+###### Requirements without Version Specifiers ######
 pytest
 pytest-cov
-numpy
+#
+###### Requirements with Version Specifiers ######
+# See https://www.python.org/dev/peps/pep-0440/#version-specifiers
+numpy >= 1.12.0
 #
