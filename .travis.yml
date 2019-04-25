@@ -1,6 +1,9 @@
-language: python
-python:
-- "3.6"
+language: generic
+
+matrix:
+  include:
+    - os: linux
+      env: PYTHON = "3.6"
 
 install:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -9,13 +12,19 @@ install:
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
   fi
 - bash miniconda.sh -b -p $HOME/miniconda
-- rm miniconda.sh
-- source $HOME/miniconda/etc/profile.d/conda.sh && conda activate
+- export PATH="$HOME/miniconda/bin:$PATH"
+- hash -r
 - conda config --set always_yes yes --set changeps1 no
 - conda update -q conda
-- conda update -q --all
 - conda config --append channels conda-forge
-- conda env create -qf test-environment.yaml;
-- source activate test-environment;
+- if [[  -z "$TRAVIS_TAG"  ]]; then
+  sed -i -e "s/\${PYTHON}/"${{PYTHON}"/" test-environment.yaml;
+  conda env create -qf test-environment.yaml;
+  source activate test-environment;
+- else
+  conda install -q conda-build anaconda-client;
+  fi
+- conda info -a
+- conda list
 script:
-- pytest -vv --cov=./
+- pytest -vv --cov=./;
