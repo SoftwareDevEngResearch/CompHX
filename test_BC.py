@@ -2,7 +2,7 @@
 
 #import numpy as np
 import pytest
-from . import HX_boundary_condition as hx
+from . import HX_boundary_condition as bc
 
 def test_temp_bc():
-    assert hx.set_boundary_conditions() == (300, 250, 200, 220)
+    assert bc.set_boundary_conditions() == (300, 250, 200, 220)

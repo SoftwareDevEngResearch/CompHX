@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 
 def set_boundary_conditions():
     """ Set the Boundary Condition values to be used in other computations"""
