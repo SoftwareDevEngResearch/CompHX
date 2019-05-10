@@ -31,14 +31,14 @@ def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_
 
 
 def q_lmtd_counter(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
-    
+    """ Computes the heat rate for a counter-current HX """
     if min([U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
         raise ValueError("Non-physical inputs have been provided for heat flux computation")
           
     return U*area*log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
 
 def q_lmtd_parallel(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
-    
+    """ Computes the heat rate LMTD for a parallel HX """
     if min([U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
         raise ValueError("Non-physical inputs have been provided for heat flux computation")
     
