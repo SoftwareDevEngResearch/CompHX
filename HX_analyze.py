@@ -63,7 +63,7 @@ def q_fin(temp_lmtd):
     eta_not_cold = bc.fin_conditions(h_cold,area_cold)
     
     ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
-    q_fin = ua_inverted**-1*temp_lmtd
+    q_fin = (1/ua_inverted)*temp_lmtd
     
     return q_fin
 

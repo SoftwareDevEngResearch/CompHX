@@ -32,7 +32,7 @@ def fin_conditions(h,area):
     
 #    _,_,h_hot,area_hot = set_flow_boundary_conditions()
     
-    num_fins = 250
+    num_fins = 25
     fin_thickness = .001
     fin_length = .008
     fin_width = 1

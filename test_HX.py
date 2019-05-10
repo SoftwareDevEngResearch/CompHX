@@ -60,3 +60,6 @@ def test_c_min_equal():
 def test_c_min_zero():
     with pytest.raises(ValueError):
         hx.c_min(0,1,0,2)
+        
+def test_q_fin():
+    assert hx.q_fin(hx.log_mean_temp_diff_parallel(300,285,30,185)) == pytest.approx(1.5,.05)
