@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+from . import HX_boundary_cond as bc
 #import pytest
 
 def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
@@ -53,6 +54,18 @@ def c_min(mass_flow_rate_hot, spec_heat_hot, mass_flow_rate_cold, spec_heat_cold
         raise ValueError("A non-zero c_min value should be specified")
     
     return min(c_hot,c_cold)
+
+def q_fin(temp_lmtd):
+    
+    h_cold,area_cold,h_hot,area_hot = bc.set_flow_boundary_conditions()
+    
+    eta_not_hot = bc.fin_conditions(h_hot,area_hot)
+    eta_not_cold = bc.fin_conditions(h_cold,area_cold)
+    
+    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
+    q_fin = ua_inverted**-1*temp_lmtd
+    
+    return q_fin
 
 def main():
     pass
