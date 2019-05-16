@@ -58,7 +58,7 @@ def c_min(mass_flow_rate_hot, spec_heat_hot, mass_flow_rate_cold, spec_heat_cold
 def q_max_ntu(c_min, temp_hot_in, temp_cold_in):
     return c_min*(temp_hot_in-temp_cold_in)
 
-def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel'):
+def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
     c_r = c_min/c_max
     if hx_type == 'parallel':
         return (1-np.exp(-ntu*(1+c_r)))/(1+c_r)
@@ -69,6 +69,8 @@ def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel'):
             return ntu/(1+ntu)
         else:
             raise ValueError("An invalid value of c_r was provided. Please provide a different value")
+    elif hx_type == 'shell':
+        return 2*(1+c_r+(1+c_r**2)**.5*((1+np.exp(-ntu*(1+c_r**2)**.5))/(1-np.exp(-ntu*(1+c_r**2)**.5))))**-1
             
 def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
     return epsilon*c_min*(temp_hot_in-temp_cold_in)
