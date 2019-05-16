@@ -68,7 +68,7 @@ def test_q_max_ntu():
     assert hx.q_max_ntu(.1, 100, 10) == 9
     
 def test_epsilon_ntu_parallel():
-    assert hx.epsilon_ntu(10, .01, 1, 'parallel') == pytest.approx(0.99995,.009)
+    assert hx.epsilon_ntu(10, .01, 1, 'parallel') == pytest.approx(0.99,.009)
     
 def test_epsilon_ntu_counter():
     assert hx.epsilon_ntu(10, .01, 1, 'counter') == pytest.approx(0.99995,.00005)
