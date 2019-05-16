@@ -55,6 +55,24 @@ def c_min(mass_flow_rate_hot, spec_heat_hot, mass_flow_rate_cold, spec_heat_cold
     
     return min(c_hot,c_cold)
 
+def q_max_ntu(c_min, temp_hot_in, temp_cold_in):
+    return c_min*(temp_hot_in-temp_cold_in)
+
+def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel'):
+    c_r = c_min/c_max
+    if hx_type == 'parallel':
+        return (1-np.exp(-ntu*(1+c_r)))/(1+c_r)
+    elif hx_type == 'counter':
+        if c_r < 1:
+            return (1-np.exp(-ntu*(1-c_r)))/(1-c_r*np.exp(-ntu*(1-c_r)))
+        elif c_r == 1:
+            return ntu/(1+ntu)
+        else:
+            raise ValueError("An invalid value of c_r was provided. Please provide a different value")
+            
+def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
+    return epsilon*c_min*(temp_hot_in-temp_cold_in)
+
 def q_fin(temp_lmtd):
     
     h_cold,area_cold,h_hot,area_hot = bc.set_flow_boundary_conditions()
