@@ -23,13 +23,13 @@ setup(
     license='BSD-3-Clause',
     python_requires='>=3',
     zip_safe=False,
-    packages=['comphx'],
+#    packages=['comphx'],
     # or find automatically:
     package=find_packages(),
-    package_dir={
-        'comphx',
-        },
-    include_package_data=True,
+#    package_dir={
+#        'comphx',
+#        },
+#    include_package_data=True,
 
 #    # or you can specify explicitly:
 #    package_data={
