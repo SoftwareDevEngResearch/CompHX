@@ -2,6 +2,8 @@
 
 import numpy as np
 from . import HX_boundary_cond as bc
+from sympy.solvers import solve
+from sympy import Symbol
 #import pytest
 
 def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
@@ -33,6 +35,7 @@ def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_
 
 def q_lmtd_counter(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
     """ Computes the heat rate for a counter-current HX """
+    
     if min([U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
         raise ValueError("Non-physical inputs have been provided for heat flux computation")
           
@@ -40,12 +43,14 @@ def q_lmtd_counter(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
 
 def q_lmtd_parallel(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
     """ Computes the heat rate LMTD for a parallel HX """
+    
     if min([U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
         raise ValueError("Non-physical inputs have been provided for heat flux computation")
     
     return U*area*log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
 
 def c_min(mass_flow_rate_hot, spec_heat_hot, mass_flow_rate_cold, spec_heat_cold):
+    """Computes the minimum C value for NTU calculations"""
     
     c_hot = mass_flow_rate_hot*spec_heat_hot
     c_cold = mass_flow_rate_cold*spec_heat_cold
@@ -56,9 +61,13 @@ def c_min(mass_flow_rate_hot, spec_heat_hot, mass_flow_rate_cold, spec_heat_cold
     return min(c_hot,c_cold)
 
 def q_max_ntu(c_min, temp_hot_in, temp_cold_in):
+    """Computes the maximum q value for the NTU method"""
+    
     return c_min*(temp_hot_in-temp_cold_in)
 
 def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
+    """Computes the effectiveness for different HX types for the NTU method. hx_type are parallel, counter, or shell. """
+    
     c_r = c_min/c_max
     if hx_type == 'parallel':
         return (1-np.exp(-ntu*(1+c_r)))/(1+c_r)
@@ -73,10 +82,12 @@ def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
         return 2*(1+c_r+(1+c_r**2)**.5*((1+np.exp(-ntu*(1+c_r**2)**.5))/(1-np.exp(-ntu*(1+c_r**2)**.5))))**-1
             
 def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
+    """Computes the q value for the NTU method"""
+    
     return epsilon*c_min*(temp_hot_in-temp_cold_in)
 
 def q_fin(temp_lmtd):
-    
+    """Computes the q value for a finned HX using the LMTD method"""
     h_cold,area_cold,h_hot,area_hot = bc.set_flow_boundary_conditions()
     
     eta_not_hot = bc.fin_conditions(h_hot,area_hot)
@@ -86,6 +97,16 @@ def q_fin(temp_lmtd):
     q_fin = (1/ua_inverted)*temp_lmtd
     
     return q_fin
+
+def temp_ntu_solver(q, epsilon, c_min, temp_hot_in = 0, temp_cold_in = 0, temp_type = 'cold'):
+    """Computes the temp for the NTU method. temp_type options are hot or cold. This are for the inlet to the HX"""
+    
+    if temp_type == 'cold':
+        temp_cold_in = Symbol('temp_cold_in')
+        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in), temp_cold_in)
+    elif temp_type == 'hot':
+        temp_hot_in = Symbol('temp_hot_in')
+        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in), temp_hot_in)
 
 def main():
     pass
