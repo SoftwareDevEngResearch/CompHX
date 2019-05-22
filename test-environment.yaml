@@ -7,3 +7,4 @@ dependencies:
 - numpy>=1.12.0
 - pytest
 - pytest-cov
+- sympy

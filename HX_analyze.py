@@ -103,10 +103,66 @@ def temp_ntu_solver(q, epsilon, c_min, temp_hot_in = 0, temp_cold_in = 0, temp_t
     
     if temp_type == 'cold':
         temp_cold_in = Symbol('temp_cold_in')
-        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in), temp_cold_in)
+        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in) - q, temp_cold_in)
     elif temp_type == 'hot':
         temp_hot_in = Symbol('temp_hot_in')
-        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in), temp_hot_in)
+        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in) - q, temp_hot_in)
+    else:
+        raise ValueError("An incorrect input for the temp_type has been provided. Please select cold or hot.")
+    
+def temp_lmtd_solver(q, U,area):
+    """Computes the lmtd for a specified q value."""
+    
+    lmtd = Symbol('lmtd')
+    return solve(U*area*lmtd - q,lmtd)
+
+def temp_lmtd_solver_parallel(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_in = 0,temp_cold_out = 0, temp_type = "hot_in"):
+    """ Computes the temperature from a specified q value for a parallel HX using the LMTD method"""
+    
+    if temp_type == "hot_in" or temp_type == "cold_in":
+        del_t_2 = temp_hot_out - temp_cold_out
+        del_t_1 =  Symbol('del_t_1')
+        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_1)
+        if temp_type == "hot_in":
+            return delta_t+ temp_cold_in
+        else:
+            return temp_hot_in - delta_t
+        
+    elif temp_type == "hot_out" or temp_type == "cold_out":
+        del_t_1 = temp_hot_in - temp_cold_in
+        del_t_2 =  Symbol('del_t_2')
+        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_2)
+        if temp_type == "hot_out":
+            return delta_t+ temp_cold_out
+        else:
+            return temp_hot_out - delta_t
+        
+    else:
+        raise ValueError("An incorrect input for the temp_type has been provided. Please select cold_in, cold_out, hot_in, or hot_out.")
+
+def temp_lmtd_solver_counter(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_in = 0,temp_cold_out = 0, temp_type = "hot_in"):
+    """ Computes the temperature from a specified q value for a counter-flow HX using the LMTD method"""
+    
+    if temp_type == "hot_in" or temp_type == "cold_out":
+        del_t_2 = temp_hot_out - temp_cold_in
+        del_t_1 =  Symbol('del_t_1')
+        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_1)
+        if temp_type == "hot_in":
+            return delta_t+ temp_cold_out
+        else:
+            return temp_hot_in - delta_t
+        
+    elif temp_type == "hot_out" or temp_type == "cold_in":
+        del_t_1 = temp_hot_in - temp_cold_out
+        del_t_2 =  Symbol('del_t_2')
+        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_2)
+        if temp_type == "hot_out":
+            return delta_t+ temp_cold_in
+        else:
+            return temp_hot_out - delta_t
+        
+    else:
+        raise ValueError("An incorrect input for the temp_type has been provided. Please select cold_in, cold_out, hot_in, or hot_out.")
 
 def main():
     pass
