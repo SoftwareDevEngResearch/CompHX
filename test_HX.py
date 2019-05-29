@@ -81,4 +81,16 @@ def test_epsilon_ntu_counter_cr1():
     
 def test_q_ntu():
     assert hx.q_ntu(10, 1, 100, 10) == 900
- 
+    
+def test_temp_ntu_solver1():
+    assert hx.temp_ntu_solver(900, 10, 1, 100, 0, 'cold') == 10
+    
+def test_temp_ntu_solver2():
+    assert hx.temp_ntu_solver(900, 10, 1, 0, 10, 'hot') == 100
+    
+def test_temp_ntu_solver3():
+    with pytest.raises(ValueError):
+        hx.temp_ntu_solver(900, 10, 1, 0, 10, 'hout')
+        
+def test_lmtd_solver(q, U,area):
+    assert hx.lmtd_solver(100, 1, 1) == 100

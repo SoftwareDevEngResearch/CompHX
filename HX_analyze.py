@@ -110,7 +110,7 @@ def temp_ntu_solver(q, epsilon, c_min, temp_hot_in = 0, temp_cold_in = 0, temp_t
     else:
         raise ValueError("An incorrect input for the temp_type has been provided. Please select cold or hot.")
     
-def temp_lmtd_solver(q, U,area):
+def lmtd_solver(q, U,area):
     """Computes the lmtd for a specified q value."""
     
     lmtd = Symbol('lmtd')
@@ -124,7 +124,7 @@ def temp_lmtd_solver_parallel(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_
         del_t_1 =  Symbol('del_t_1')
         delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_1)
         if temp_type == "hot_in":
-            return delta_t+ temp_cold_in
+            return delta_t + temp_cold_in
         else:
             return temp_hot_in - delta_t
         
@@ -133,7 +133,7 @@ def temp_lmtd_solver_parallel(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_
         del_t_2 =  Symbol('del_t_2')
         delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_2)
         if temp_type == "hot_out":
-            return delta_t+ temp_cold_out
+            return delta_t + temp_cold_out
         else:
             return temp_hot_out - delta_t
         
@@ -148,7 +148,7 @@ def temp_lmtd_solver_counter(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_i
         del_t_1 =  Symbol('del_t_1')
         delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_1)
         if temp_type == "hot_in":
-            return delta_t+ temp_cold_out
+            return delta_t + temp_cold_out
         else:
             return temp_hot_in - delta_t
         
@@ -157,7 +157,7 @@ def temp_lmtd_solver_counter(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_i
         del_t_2 =  Symbol('del_t_2')
         delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_2)
         if temp_type == "hot_out":
-            return delta_t+ temp_cold_in
+            return delta_t + temp_cold_in
         else:
             return temp_hot_out - delta_t
         
