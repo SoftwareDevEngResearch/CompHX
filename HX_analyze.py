@@ -2,8 +2,10 @@
 
 import numpy as np
 from . import HX_boundary_cond as bc
+import sympy as sp
 from sympy.solvers import solve
 from sympy import Symbol
+#import scipy.special as sc
 #import pytest
 
 def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
@@ -103,10 +105,10 @@ def temp_ntu_solver(q, epsilon, c_min, temp_hot_in = 0, temp_cold_in = 0, temp_t
     
     if temp_type == 'cold':
         temp_cold_in = Symbol('temp_cold_in')
-        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in) - q, temp_cold_in)
+        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in) - q, temp_cold_in)[0]
     elif temp_type == 'hot':
         temp_hot_in = Symbol('temp_hot_in')
-        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in) - q, temp_hot_in)
+        return solve(epsilon*c_min*(temp_hot_in-temp_cold_in) - q, temp_hot_in)[0]
     else:
         raise ValueError("An incorrect input for the temp_type has been provided. Please select cold or hot.")
     
@@ -114,7 +116,7 @@ def lmtd_solver(q, U,area):
     """Computes the lmtd for a specified q value."""
     
     lmtd = Symbol('lmtd')
-    return solve(U*area*lmtd - q,lmtd)
+    return solve(U*area*lmtd - q,lmtd)[0]
 
 def temp_lmtd_solver_parallel(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_in = 0,temp_cold_out = 0, temp_type = "hot_in"):
     """ Computes the temperature from a specified q value for a parallel HX using the LMTD method"""
@@ -122,7 +124,7 @@ def temp_lmtd_solver_parallel(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_
     if temp_type == "hot_in" or temp_type == "cold_in":
         del_t_2 = temp_hot_out - temp_cold_out
         del_t_1 =  Symbol('del_t_1')
-        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_1)
+        delta_t = float(solve((del_t_1 - del_t_2)/sp.log(del_t_1/del_t_2)-lmtd, del_t_1)[0])
         if temp_type == "hot_in":
             return delta_t + temp_cold_in
         else:
@@ -131,7 +133,7 @@ def temp_lmtd_solver_parallel(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_
     elif temp_type == "hot_out" or temp_type == "cold_out":
         del_t_1 = temp_hot_in - temp_cold_in
         del_t_2 =  Symbol('del_t_2')
-        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_2)
+        delta_t = float(solve((del_t_1 - del_t_2)/sp.log(del_t_1/del_t_2)-lmtd, del_t_2)[0])
         if temp_type == "hot_out":
             return delta_t + temp_cold_out
         else:
@@ -146,7 +148,7 @@ def temp_lmtd_solver_counter(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_i
     if temp_type == "hot_in" or temp_type == "cold_out":
         del_t_2 = temp_hot_out - temp_cold_in
         del_t_1 =  Symbol('del_t_1')
-        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_1)
+        delta_t = float(solve((del_t_1 - del_t_2)/sp.log(del_t_1/del_t_2)-lmtd, del_t_1)[0])
         if temp_type == "hot_in":
             return delta_t + temp_cold_out
         else:
@@ -155,7 +157,7 @@ def temp_lmtd_solver_counter(lmtd, temp_hot_in = 0 ,temp_hot_out = 0,temp_cold_i
     elif temp_type == "hot_out" or temp_type == "cold_in":
         del_t_1 = temp_hot_in - temp_cold_out
         del_t_2 =  Symbol('del_t_2')
-        delta_t = solve((del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)-lmtd, del_t_2)
+        delta_t = float(solve((del_t_1 - del_t_2)/sp.log(del_t_1/del_t_2)-lmtd, del_t_2)[0])
         if temp_type == "hot_out":
             return delta_t + temp_cold_in
         else:
