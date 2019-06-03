@@ -25,10 +25,6 @@ def set_flow_boundary_conditions():
     
     return h_cold, area_cold, h_hot, area_hot
 
-def u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot):
-    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
-    return 1/ua_inverted
-
 def fin_conditions(h,area):
     """Defining conditions for fin efficiency"""
     

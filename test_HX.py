@@ -2,7 +2,7 @@
 
 #import numpy as np
 import pytest
-import HX_analyze as hx
+from . import HX_analyze as hx
 
 def test_lmtd_counter():
     assert hx.log_mean_temp_diff_counter(100,85,30,55) == pytest.approx(49.83,.005)
@@ -62,7 +62,7 @@ def test_c_min_zero():
         hx.c_min(0,1,0,2)
         
 def test_q_fin():
-    assert hx.q_fin(hx.log_mean_temp_diff_parallel(300,285,30,185)) == pytest.approx(1.5,.05)
+    assert hx.q_fin(2,2,1,1,1,1,hx.log_mean_temp_diff_parallel(100,85,30,55)) == pytest.approx(47.21,.005)
     
 def test_q_max_ntu():
     assert hx.q_max_ntu(.1, 100, 10) == 9
@@ -126,3 +126,6 @@ def test_temp_lmtd_solver_counter4():
 def test_temp_lmtd_solver_counter5():
     with pytest.raises(ValueError):
         hx.temp_lmtd_solver_counter(100, 211.879, 100, 10, 60, temp_type = "cold12_out")
+        
+def test_u_resistance():
+    assert hx.u_resistance(1,1,2,1,1,2) == 1

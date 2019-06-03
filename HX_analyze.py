@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
-import HX_boundary_cond as bcs
+#from . import HX_boundary_cond as bcs
 import sympy as sp
 from sympy.solvers import solve
 from sympy import Symbol
@@ -83,21 +83,25 @@ def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
     elif hx_type == 'shell':
         return 2*(1+c_r+(1+c_r**2)**.5*((1+np.exp(-ntu*(1+c_r**2)**.5))/(1-np.exp(-ntu*(1+c_r**2)**.5))))**-1
             
+def u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot):
+    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
+    return 1/ua_inverted
+
 def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
     """Computes the q value for the NTU method"""
     
     return epsilon*c_min*(temp_hot_in-temp_cold_in)
 
-def q_fin(temp_lmtd):
+def q_fin(eta_not_hot, eta_not_cold, h_cold, area_cold, h_hot, area_hot, temp_lmtd):
     """Computes the q value for a finned HX using the LMTD method"""
-    h_cold,area_cold,h_hot,area_hot = bcs.set_flow_boundary_conditions()
+#    h_cold,area_cold,h_hot,area_hot = set_flow_boundary_conditions()
     
-    eta_not_hot = bcs.fin_conditions(h_hot,area_hot)
-    eta_not_cold = bcs.fin_conditions(h_cold,area_cold)
+#    eta_not_hot = fin_conditions(h_hot,area_hot)
+#    eta_not_cold = fin_conditions(h_cold,area_cold)
     
 #    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
 #    q_fin = (1/ua_inverted)*temp_lmtd
-    q_fin = bcs.u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd
+    q_fin = u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd
     
     return q_fin
 
