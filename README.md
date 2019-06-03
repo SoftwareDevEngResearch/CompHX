@@ -1,2 +1,2 @@
 # CompHX
-Analyze Compact Heat Exchangers
+Analyze Heat Exchangers
