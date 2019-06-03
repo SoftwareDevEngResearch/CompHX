@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from . import HX_boundary_cond as bc
+import HX_boundary_cond as bcs
 import sympy as sp
 from sympy.solvers import solve
 from sympy import Symbol
@@ -90,13 +90,14 @@ def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
 
 def q_fin(temp_lmtd):
     """Computes the q value for a finned HX using the LMTD method"""
-    h_cold,area_cold,h_hot,area_hot = bc.set_flow_boundary_conditions()
+    h_cold,area_cold,h_hot,area_hot = bcs.set_flow_boundary_conditions()
     
-    eta_not_hot = bc.fin_conditions(h_hot,area_hot)
-    eta_not_cold = bc.fin_conditions(h_cold,area_cold)
+    eta_not_hot = bcs.fin_conditions(h_hot,area_hot)
+    eta_not_cold = bcs.fin_conditions(h_cold,area_cold)
     
-    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
-    q_fin = (1/ua_inverted)*temp_lmtd
+#    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
+#    q_fin = (1/ua_inverted)*temp_lmtd
+    q_fin = bcs.u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd
     
     return q_fin
 

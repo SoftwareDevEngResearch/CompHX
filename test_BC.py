@@ -9,3 +9,9 @@ def test_temp_bc():
     
 def test_fin_efficiency():
     assert bc.fin_conditions(150,2.75) == pytest.approx(.9994,.0005)
+    
+def test_flow_conditions():
+    assert bc.set_flow_boundary_conditions() == (10,.001,150,2.75)
+    
+def test_u_resistance():
+    assert bc.u_resistance(1,1,2,1,1,2) == 1
