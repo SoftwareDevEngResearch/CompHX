@@ -2,7 +2,7 @@
 
 #import numpy as np
 import pytest
-from . import HX_analyze as hx
+import HX_analyze as hx
 
 def test_lmtd_counter():
     assert hx.log_mean_temp_diff_counter(100,85,30,55) == pytest.approx(49.83,.005)
