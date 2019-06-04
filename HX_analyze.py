@@ -92,6 +92,8 @@ def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
             raise ValueError("An invalid value of c_r was provided. Please provide a different value")
     elif hx_type == 'shell':
         return 2*(1+c_r+(1+c_r**2)**.5*((1+np.exp(-ntu*(1+c_r**2)**.5))/(1-np.exp(-ntu*(1+c_r**2)**.5))))**-1
+    else:
+        raise ValueError("An invalid HX type was given.")
             
 def u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot):
     

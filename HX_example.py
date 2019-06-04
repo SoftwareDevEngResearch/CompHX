@@ -11,6 +11,7 @@
 import HX_analyze as hx
 import HX_boundary_cond as bc
 import sys
+import matplotlib.pyplot as plt
 
 # This script works as an example of how to use the modules developed to solve a HX problem with provided boundary conditions
 
@@ -42,6 +43,21 @@ def main():
 #    print(len(q_lmtd_counter), len(q_lmtd_parallel))
 #    print(max(q_lmtd_counter))
 #    print(max(q_lmtd_parallel))
+    
+    plt.plot(q_lmtd_counter)
+    plt.plot(q_lmtd_counter)
+#    plt.grid()
+#    plt.title('Turbulent Kinetic Energy Spectrum for a Pipe')
+#    plt.xlim(right=1000.)
+#    plt.ylim(top=1.)
+#    plt.xlabel('Frequency')
+#    plt.ylabel('TKE')
+    plt.legend()
+    plt.savefig("test.png")
+    plt.show()
+    plt.close()
+    
+    
 
 if __name__ == "__main__":
     main()

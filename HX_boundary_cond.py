@@ -52,6 +52,11 @@ def fin_conditions(h,area,name):
     m = []
     eta_f = []
     eta_not = []
+    fin_length_var = []
+    fin_width_var = []
+    fin_thickness_var = []
+    num_fins_var = []
+    variables = []
         
     if isinstance(fin_length, list):
         for k in range(len(fin_length)):
@@ -108,6 +113,7 @@ def fin_conditions(h,area,name):
                     if isinstance(eta_f, list):
                         for k in range(len(eta_f)):
                             eta_not.append(1-num_fins[j]*fin_area[i]*(1-eta_f[k])/area)
+                            
                     else:
                         eta_not.append(1-num_fins[j]*fin_area[i]*(1-eta_f)/area)
             else:
