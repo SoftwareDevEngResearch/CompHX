@@ -24,10 +24,10 @@ def main():
     h_cold, area_cold, h_hot, area_hot = bc.set_flow_boundary_conditions(name)
     
     eta_not_hot = bc.fin_conditions(h_hot,area_hot,name)
-    print(len(eta_not_hot))
+    print(eta_not_hot)
     
     eta_not_cold = bc.fin_conditions(h_cold,area_cold,name)
-    print(len(eta_not_cold))
+    print(eta_not_cold)
 #    lmtd_parallel = hx.log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
 #    lmtd_counter = hx.log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
     
@@ -38,8 +38,10 @@ def main():
 #    q_lmtd_counter = hx.q_lmtd_counter(U,hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out)
 #    q_lmtd_parallel = hx.q_lmtd_parallel(U,hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out)
 #    
-    print(q_lmtd_counter, q_lmtd_parallel)
-    print(len(q_lmtd_counter), len(q_lmtd_parallel))
+#    print(q_lmtd_counter, q_lmtd_parallel)
+#    print(len(q_lmtd_counter), len(q_lmtd_parallel))
+#    print(max(q_lmtd_counter))
+#    print(max(q_lmtd_parallel))
 
 if __name__ == "__main__":
     main()
