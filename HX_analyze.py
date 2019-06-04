@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
-#from . import HX_boundary_cond as bcs
+import HX_boundary_cond as bcs
 import sympy as sp
 from sympy.solvers import solve
 from sympy import Symbol
@@ -94,63 +94,52 @@ def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
         return 2*(1+c_r+(1+c_r**2)**.5*((1+np.exp(-ntu*(1+c_r**2)**.5))/(1-np.exp(-ntu*(1+c_r**2)**.5))))**-1
     else:
         raise ValueError("An invalid HX type was given.")
-            
-def u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot):
-    
-    ua_inverted = []
-    if isinstance(eta_not_cold, list):
-        for i in range(len(eta_not_cold)):
-            if isinstance(eta_not_hot, list):
-                for j in range(len(eta_not_hot)):
-                    ua_inverted.append(1/(eta_not_cold[i]*h_cold*area_cold) + 1/(eta_not_hot[j]*h_hot*area_hot))
-            else:
-                ua_inverted.append(1/(eta_not_cold[i]*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot))
-    else:
-        if isinstance(eta_not_hot, list):
-            for j in range(len(eta_not_hot)):
-                ua_inverted.append(1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot[j]*h_hot*area_hot))
-        else:
-            ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
-    
-    if isinstance(ua_inverted, list):
-        ua = []
-        for i in range(len(ua_inverted)):
-            ua.append(1/ua_inverted[i])
-        return ua    
-    else:
-        return 1/ua_inverted
 
 def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
     """Computes the q value for the NTU method"""
     
     return epsilon*c_min*(temp_hot_in-temp_cold_in)
 
-def q_fin(eta_not_hot, eta_not_cold, h_cold, area_cold, h_hot, area_hot, temp_lmtd):
+def q_fin(temp_lmtd,name):
     """Computes the q value for a finned HX using the LMTD method"""
-#    h_cold,area_cold,h_hot,area_hot = set_flow_boundary_conditions()
     
-#    eta_not_hot = fin_conditions(h_hot,area_hot)
-#    eta_not_cold = fin_conditions(h_cold,area_cold)
+    inputs = bcs.read_bc(name)
     
-#    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
-#    q_fin = (1/ua_inverted)*temp_lmtd
+    h_cold = inputs["h_cold"]
+    area_cold = inputs["area_cold"]
     
-    if isinstance(eta_not_hot,list):
-        q_fin = []
-        for i in range(len(eta_not_hot)):
-            if isinstance(eta_not_cold,list):
-                for j in range(len(eta_not_cold)):
-                    q_fin.append(u_resistance(eta_not_cold[i], h_cold, area_cold, eta_not_hot[i], h_hot, area_hot)*temp_lmtd)
-            else:
-                q_fin.append(u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot[i], h_hot, area_hot)*temp_lmtd)
-    else:
-        if isinstance(eta_not_cold,list):
-            for j in range(len(eta_not_cold)):
-                q_fin.append(u_resistance(eta_not_cold[i], h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd)
-        else:
-            q_fin = u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd
+    h_hot = inputs["h_hot"]
+    area_hot = inputs["area_hot"]
+    
+    num_fins = inputs["num_fins"]
+    fin_thickness = inputs["fin_thickness"]
+    fin_length = inputs["fin_length"]
+    fin_width = inputs["fin_width"]
+    wall_k = inputs["wall_k"]
+    
+    ua_inverted = []
+    ua = []
+    eta_not_cold = []
+    eta_not_hot = []
+    
 
-    return q_fin
+    variables = []
+    q = []
+    
+    counter = 0    
+    for i in range(len(num_fins)):
+        for j in range(len(fin_length)):
+            for k in range(len(fin_width)):
+                for l in range(len(fin_thickness)):
+                    eta_not_cold.append(1-num_fins[i]*fin_length[j]*fin_width[k]*(1-np.tanh(np.sqrt(h_cold*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*(fin_length[j]/2))/(np.sqrt(h_cold*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*fin_length[j]/2))/area_cold)
+                    eta_not_hot.append(1-num_fins[i]*fin_length[j]*fin_width[k]*(1-np.tanh(np.sqrt(h_hot*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*(fin_length[j]/2))/(np.sqrt(h_hot*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*fin_length[j]/2))/area_hot)
+                    ua_inverted.append(1/(eta_not_cold[counter]*h_cold*area_cold) + 1/(eta_not_hot[counter]*h_hot*area_hot))
+                    ua.append(1/ua_inverted[counter])
+                    q.append(ua[counter]*temp_lmtd)
+                    variables.append([num_fins[i], fin_length[j], fin_width[k], fin_thickness[k]])
+                    counter += 1
+
+    return q, variables
 
 def temp_ntu_solver(q, epsilon, c_min, temp_hot_in = 0, temp_cold_in = 0, temp_type = 'cold'):
     """Computes the temp for the NTU method. temp_type options are hot or cold. This are for the inlet to the HX"""
