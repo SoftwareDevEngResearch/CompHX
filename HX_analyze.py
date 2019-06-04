@@ -35,21 +35,31 @@ def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_
     return (del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)
 
 
-def q_lmtd_counter(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
+def q_lmtd_counter(UA,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
     """ Computes the heat rate for a counter-current HX """
+    if isinstance(UA,list):
+        q_lmtd_counter = []
+        for i in range(len(UA)):
+            if min([UA[i],temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
+                raise ValueError("Non-physical inputs have been provided for heat flux computation")
     
-    if min([U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
-        raise ValueError("Non-physical inputs have been provided for heat flux computation")
-          
-    return U*area*log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
+            q_lmtd_counter.append(UA[i]*log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out))
+        return q_lmtd_counter
+    else:
+        return UA*log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
 
-def q_lmtd_parallel(U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
+def q_lmtd_parallel(UA,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
     """ Computes the heat rate LMTD for a parallel HX """
     
-    if min([U,area,temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
-        raise ValueError("Non-physical inputs have been provided for heat flux computation")
-    
-    return U*area*log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
+    if isinstance(UA,list):
+        q_lmtd_parallel = []
+        for i in range(len(UA)):
+            if min([UA[i],temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out]) < 0:
+                raise ValueError("Non-physical inputs have been provided for heat flux computation")
+            q_lmtd_parallel.append(UA[i]*log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out))
+        return q_lmtd_parallel
+    else:
+        return UA*log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
 
 def c_min(mass_flow_rate_hot, spec_heat_hot, mass_flow_rate_cold, spec_heat_cold):
     """Computes the minimum C value for NTU calculations"""
@@ -84,8 +94,29 @@ def epsilon_ntu(ntu, c_min, c_max, hx_type = 'parallel', passes = 2):
         return 2*(1+c_r+(1+c_r**2)**.5*((1+np.exp(-ntu*(1+c_r**2)**.5))/(1-np.exp(-ntu*(1+c_r**2)**.5))))**-1
             
 def u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot):
-    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
-    return 1/ua_inverted
+    
+    ua_inverted = []
+    if isinstance(eta_not_cold, list):
+        for i in range(len(eta_not_cold)):
+            if isinstance(eta_not_hot, list):
+                for j in range(len(eta_not_hot)):
+                    ua_inverted.append(1/(eta_not_cold[i]*h_cold*area_cold) + 1/(eta_not_hot[j]*h_hot*area_hot))
+            else:
+                ua_inverted.append(1/(eta_not_cold[i]*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot))
+    else:
+        if isinstance(eta_not_hot, list):
+            for j in range(len(eta_not_hot)):
+                ua_inverted.append(1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot[j]*h_hot*area_hot))
+        else:
+            ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
+    
+    if isinstance(ua_inverted, list):
+        ua = []
+        for i in range(len(ua_inverted)):
+            ua.append(1/ua_inverted[i])
+        return ua    
+    else:
+        return 1/ua_inverted
 
 def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
     """Computes the q value for the NTU method"""
@@ -101,8 +132,22 @@ def q_fin(eta_not_hot, eta_not_cold, h_cold, area_cold, h_hot, area_hot, temp_lm
     
 #    ua_inverted = 1/(eta_not_cold*h_cold*area_cold) + 1/(eta_not_hot*h_hot*area_hot)
 #    q_fin = (1/ua_inverted)*temp_lmtd
-    q_fin = u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd
     
+    if isinstance(eta_not_hot,list):
+        q_fin = []
+        for i in range(len(eta_not_hot)):
+            if isinstance(eta_not_cold,list):
+                for j in range(len(eta_not_cold)):
+                    q_fin.append(u_resistance(eta_not_cold[i], h_cold, area_cold, eta_not_hot[i], h_hot, area_hot)*temp_lmtd)
+            else:
+                q_fin.append(u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot[i], h_hot, area_hot)*temp_lmtd)
+    else:
+        if isinstance(eta_not_cold,list):
+            for j in range(len(eta_not_cold)):
+                q_fin.append(u_resistance(eta_not_cold[i], h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd)
+        else:
+            q_fin = u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)*temp_lmtd
+
     return q_fin
 
 def temp_ntu_solver(q, epsilon, c_min, temp_hot_in = 0, temp_cold_in = 0, temp_type = 'cold'):

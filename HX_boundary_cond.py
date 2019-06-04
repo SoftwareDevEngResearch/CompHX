@@ -3,16 +3,17 @@
 import numpy as np
 import yaml
 
-def read_bc():
-    with open('input.yaml', 'r') as f:
+def read_bc(name):
+
+    with open(name, 'r') as f:
         inputs = yaml.safe_load(f)
     return inputs
 
 
-def set_temp_boundary_conditions():
+def set_temp_boundary_conditions(name):
     """ Set the Boundary Condition values to be used in other computations"""
     
-    inputs = read_bc()
+    inputs = read_bc(name)
     
     hot_temp_in = inputs["hot_temp_in"]
     hot_temp_out = inputs["hot_temp_out"]
@@ -22,10 +23,10 @@ def set_temp_boundary_conditions():
     
     return hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out
 
-def set_flow_boundary_conditions():
+def set_flow_boundary_conditions(name):
     """Defining the flow boundary conditions"""
     
-    inputs = read_bc()
+    inputs = read_bc(name)
     
     h_cold = inputs["h_cold"]
     area_cold = inputs["area_cold"]
@@ -36,10 +37,10 @@ def set_flow_boundary_conditions():
     return h_cold, area_cold, h_hot, area_hot
 
 
-def fin_conditions(h,area):
+def fin_conditions(h,area,name):
     """Defining conditions for fin efficiency"""
     
-    inputs = read_bc()
+    inputs = read_bc(name)
     
     num_fins = inputs["num_fins"]
     fin_thickness = inputs["fin_thickness"]
@@ -69,7 +70,7 @@ def fin_conditions(h,area):
             
             
     if isinstance(fin_thickness, list):
-        for j in range(len(fin_length)):
+        for j in range(len(fin_thickness)):
             if isinstance(fin_width, list):
                 for l in range(len(fin_width)):
                     m.append(np.sqrt(h*(2*fin_thickness[j] + 2*fin_width[l])/(wall_k*fin_thickness[j]*fin_width[l])))

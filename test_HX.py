@@ -35,18 +35,18 @@ def test_lmtd_parallel4():
         hx.log_mean_temp_diff_parallel(100,10,100,10)
 
 def test_q_lmtd_counter():
-    assert hx.q_lmtd_counter(1,1,100,85,30,55) == pytest.approx(49.83,.005)
+    assert hx.q_lmtd_counter(1,100,85,30,55) == pytest.approx(49.83,.005)
     
 def test_q_lmtd_counter2():
     with pytest.raises(ValueError):
-        hx.q_lmtd_counter(-11,1,100,-85,30,-55)
+        hx.q_lmtd_counter(-11,100,-85,30,-55)
     
 def test_q_lmtd_parallel():
-    assert hx.q_lmtd_parallel(1,1,100,85,30,55) == pytest.approx(47.21,.005)
+    assert hx.q_lmtd_parallel(1,100,85,30,55) == pytest.approx(47.21,.005)
     
 def test_q_lmtd_parralel2():
     with pytest.raises(ValueError):
-        hx.q_lmtd_parallel(-11,1,100,-85,30,-55)
+        hx.q_lmtd_parallel(-11,100,-85,30,-55)
 
 def test_c_min_cold():
     assert hx.c_min(10,10,1,1) == 1
