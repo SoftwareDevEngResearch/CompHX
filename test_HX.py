@@ -3,6 +3,7 @@
 #import numpy as np
 import pytest
 from . import HX_analyze as hx
+#import HX_boundary_cond
 
 def test_lmtd_counter():
     assert hx.log_mean_temp_diff_counter(100,85,30,55) == pytest.approx(49.83,.005)
@@ -61,8 +62,11 @@ def test_c_min_zero():
     with pytest.raises(ValueError):
         hx.c_min(0,1,0,2)
         
-def test_q_fin():
-    assert hx.q_fin(2,2,1,1,1,1,hx.log_mean_temp_diff_parallel(100,85,30,55)) == pytest.approx(47.21,.005)
+def test_q_fin_single():
+    name = "input_single.yaml"
+    
+    test, _ = hx.q_fin(hx.log_mean_temp_diff_parallel(300,250,200,220),name)
+    assert test == [.5193580509078185]
     
 def test_q_max_ntu():
     assert hx.q_max_ntu(.1, 100, 10) == 9
@@ -127,5 +131,19 @@ def test_temp_lmtd_solver_counter5():
     with pytest.raises(ValueError):
         hx.temp_lmtd_solver_counter(100, 211.879, 100, 10, 60, temp_type = "cold12_out")
         
-def test_u_resistance():
-    assert hx.u_resistance(1,1,2,1,1,2) == 1
+    
+def test_fin_conditions_parallel():
+    name = "input_test.yaml"
+    
+    test, _ = hx.q_fin(hx.log_mean_temp_diff_parallel(300,250,200,220),name)
+    
+    assert test == pytest.approx((.5193580509078185,.5193580509078185,.5193580509078185,.5193580509078185,
+                            .5193580509078185,.5193580509078185,.5193580509078185,.5193580509078185))
+
+def test_fin_conditions_counter():
+    name = "input_test.yaml"
+    
+    test, _ = hx.q_fin(hx.log_mean_temp_diff_counter(300,250,200,220),name)
+    
+    assert test == pytest.approx((.5701715568247346,.5701715568247346,.5701715568247346,.5701715568247346,
+                            .5701715568247346,.5701715568247346,.5701715568247346,.5701715568247346))

@@ -1,27 +1,46 @@
 case: example
 hot_temp_in: 300
-hot_temp_out: 250
-cold_temp_in: 200
-cold_temp_out: 220
+hot_temp_out: 150
+cold_temp_in: 20
+cold_temp_out: 120
 h_cold: 10
-area_cold: .001
+area_cold: 2.75
 h_hot: 150
 area_hot: 2.75 
 num_fins:
-  - 2
-  - 4
-  - 6
-  - 8
-  - 10
+  - 20
+  - 40
+  - 60
+  - 80
+  - 100
 fin_thickness: 
-  - .001
   - .002
-  - .003
-fin_length:
+  - .004
   - .006
-  - .008
-  - .01
+fin_length:
+  - .02
+  - .04
+  - .06
 fin_width:
-  - .9
+  - .75
   - 1
+  - 1.25
 wall_k: 200
+wall_thickness: .01
+num_tubes:
+  - 20
+  - 40
+  - 60
+  - 80
+  - 100
+tube_thickness: 
+  - .002
+  - .004
+  - .006
+tube_length:
+  - .4
+  - .6
+  - .8
+tube_outer_diameter:
+  - .02
+  - .04

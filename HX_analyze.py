@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
 import numpy as np
-import HX_boundary_cond as bcs
 import sympy as sp
 from sympy.solvers import solve
 from sympy import Symbol
-#import scipy.special as sc
-#import pytest
+import yaml
+
 
 def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
     """ Computes the LMTD for a counter-current HX """
@@ -103,7 +102,9 @@ def q_ntu(epsilon, c_min, temp_hot_in, temp_cold_in):
 def q_fin(temp_lmtd,name):
     """Computes the q value for a finned HX using the LMTD method"""
     
-    inputs = bcs.read_bc(name)
+#    inputs = bcs.read_bc(name)
+    with open(name, 'r') as f:
+        inputs = yaml.safe_load(f)
     
     h_cold = inputs["h_cold"]
     area_cold = inputs["area_cold"]
@@ -116,6 +117,7 @@ def q_fin(temp_lmtd,name):
     fin_length = inputs["fin_length"]
     fin_width = inputs["fin_width"]
     wall_k = inputs["wall_k"]
+    wall_thickness = inputs["wall_thickness"]
     
     ua_inverted = []
     ua = []
@@ -131,13 +133,54 @@ def q_fin(temp_lmtd,name):
         for j in range(len(fin_length)):
             for k in range(len(fin_width)):
                 for l in range(len(fin_thickness)):
-                    eta_not_cold.append(1-num_fins[i]*fin_length[j]*fin_width[k]*(1-np.tanh(np.sqrt(h_cold*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*(fin_length[j]/2))/(np.sqrt(h_cold*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*fin_length[j]/2))/area_cold)
-                    eta_not_hot.append(1-num_fins[i]*fin_length[j]*fin_width[k]*(1-np.tanh(np.sqrt(h_hot*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*(fin_length[j]/2))/(np.sqrt(h_hot*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*fin_length[j]/2))/area_hot)
-                    ua_inverted.append(1/(eta_not_cold[counter]*h_cold*area_cold) + 1/(eta_not_hot[counter]*h_hot*area_hot))
+                    eta_not_cold.append(1-(num_fins[i]*fin_length[j]*fin_width[k]*(1-np.tanh(np.sqrt(h_cold*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*(fin_length[j]/2))/(np.sqrt(h_cold*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*fin_length[j]/2)))/area_cold)
+                    eta_not_hot.append(1-(num_fins[i]*fin_length[j]*fin_width[k]*(1-np.tanh(np.sqrt(h_hot*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*(fin_length[j]/2))/(np.sqrt(h_hot*(2*fin_thickness[l] + 2*fin_width[k])/(wall_k*fin_thickness[l]*fin_width[k]))*fin_length[j]/2)))/area_hot)
+                    ua_inverted.append(1/(eta_not_cold[counter]*h_cold*(area_cold+num_fins[i]*fin_length[j]*fin_width[k])) + (wall_thickness/(wall_k*area_hot)) + 1/(eta_not_hot[counter]*h_hot*(area_hot+num_fins[i]*fin_length[j]*fin_width[k])))
                     ua.append(1/ua_inverted[counter])
                     q.append(ua[counter]*temp_lmtd)
                     variables.append([num_fins[i], fin_length[j], fin_width[k], fin_thickness[k]])
                     counter += 1
+
+
+    return q, variables
+
+def q_tube(temp_lmtd,name):
+    """Computes the q value for a tubed HX using the LMTD method"""
+    
+#    inputs = bcs.read_bc(name)
+    with open(name, 'r') as f:
+        inputs = yaml.safe_load(f)
+    
+    h_cold = inputs["h_cold"]
+    area_cold = inputs["area_cold"]
+    
+    h_hot = inputs["h_hot"]
+    area_hot = inputs["area_hot"]
+    
+    num_tubes = inputs["num_tubes"]
+    tube_thickness = inputs["tube_thickness"]
+    tube_length = inputs["tube_length"]
+    tube_diameter = inputs["tube_outer_diameter"]
+    wall_k = inputs["wall_k"]
+    
+    ua_inverted = []
+    ua = []
+    
+
+    variables = []
+    q = []
+    
+    counter = 0    
+    for i in range(len(num_tubes)):
+        for j in range(len(tube_length)):
+            for k in range(len(tube_diameter)):
+                for l in range(len(tube_thickness)):
+                    ua_inverted.append(1/(h_cold*(area_cold+num_tubes[i]*tube_length[j]*(tube_diameter[k]-2*tube_thickness[l])*np.pi)) + ((np.log(tube_diameter[k]/(tube_diameter[k]-2*tube_thickness[l]))/(2*np.pi*wall_k*tube_length[j]))) + 1/(h_hot*(area_hot+num_tubes[i]*tube_length[j]*tube_diameter[k]*np.pi)))
+                    ua.append(1/ua_inverted[counter])
+                    q.append(ua[counter]*temp_lmtd)
+                    variables.append([num_tubes[i], tube_length[j], tube_diameter[k], tube_thickness[k]])
+                    counter += 1
+
 
     return q, variables
 

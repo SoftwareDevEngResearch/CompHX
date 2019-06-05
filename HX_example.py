@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
 
-#import numpy as np
-#from . import HX_boundary_cond as bc
-#import sympy as sp
-#from sympy.solvers import solve
-#from sympy import Symbol
-#import scipy.special as sc
-#import pytest
-
 import HX_analyze as hx
 import HX_boundary_cond as bc
 import sys
@@ -23,44 +15,60 @@ def main():
     hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out = bc.set_temp_boundary_conditions(name)
     
     h_cold, area_cold, h_hot, area_hot = bc.set_flow_boundary_conditions(name)
+
     
-#    eta_not_hot, hot_vars = bc.fin_conditions(h_hot,area_hot,name)
-#    print(eta_not_hot)
+    q_fin_counter, fin_counter_vars = hx.q_fin(hx.log_mean_temp_diff_counter(hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out),name)
+    q_fin_parallel, fin_parallel_vars = hx.q_fin(hx.log_mean_temp_diff_parallel(hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out),name)
     
-#    eta_not_cold, cold_vars = bc.fin_conditions(h_cold,area_cold,name)
-#    print(eta_not_cold)
-#    lmtd_parallel = hx.log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
-#    lmtd_counter = hx.log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out)
+    q_tube_counter, tube_counter_vars = hx.q_tube(hx.log_mean_temp_diff_counter(hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out),name)
+    q_tube_parallel, tube_parallel_vars = hx.q_tube(hx.log_mean_temp_diff_parallel(hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out),name)
     
-#    U =  hx.u_resistance(eta_not_cold, h_cold, area_cold, eta_not_hot, h_hot, area_hot)
+    max_counter_fin = []
+    max_parallel_fin = []
     
-    q_lmtd_counter, counter_vars = hx.q_fin(hx.log_mean_temp_diff_counter(hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out),name)
-    q_lmtd_parallel, parallel_vars = hx.q_fin(hx.log_mean_temp_diff_parallel(hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out),name)
-#    q_lmtd_counter = hx.q_lmtd_counter(U,hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out)
-#    q_lmtd_parallel = hx.q_lmtd_parallel(U,hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out)
-#    
-#    print(q_lmtd_counter, q_lmtd_parallel)
-#    print(len(q_lmtd_counter), len(q_lmtd_parallel))
-#    print(max(q_lmtd_counter))
-#    print(max(q_lmtd_parallel))
+    max_counter_tube = []
+    max_parallel_tube = []
     
-    print(len(q_lmtd_counter))
-    print(len(counter_vars))
-#    for i in range(len(eta_not_hot_vars)):
-#        print(len(eta_not_hot_vars[i]))
     
-    plt.plot(q_lmtd_counter, label = "Counter-Flow")
-    plt.plot(q_lmtd_parallel, label = "Parallel-Flow")
-#    plt.grid()
+    
+    for i in range(len(q_fin_counter)):
+        if q_fin_counter[i] == max(q_fin_counter):
+            max_counter_fin.append(fin_counter_vars[i])
+        if q_fin_parallel[i] == max(q_fin_parallel):
+            max_parallel_fin.append(fin_parallel_vars[i])
+            
+    
+    for i in range(len(q_tube_counter)):
+        if q_tube_counter[i] == max(q_tube_counter):
+            max_counter_tube.append(tube_counter_vars[i])
+        if q_tube_parallel[i] == max(q_tube_parallel):
+            max_parallel_tube.append(tube_parallel_vars[i])
+            
+    print(max(q_fin_counter))
+    print(max(q_fin_parallel))
+    print(max(q_tube_counter))
+    print(max(q_tube_parallel))
+    
+    print(max_counter_fin)
+    print(max_parallel_fin)
+    print(max_counter_tube)
+    print(max_parallel_tube)
+    
+            
+    
+    plt.plot(q_fin_counter, label = "Finned Counter-Flow")
+    plt.plot(q_fin_parallel, label = "Finned Parallel-Flow")
+    plt.plot(q_tube_counter, label = "Tubed Counter-Flow")
+    plt.plot(q_tube_parallel, label = "Tubed Parallel-Flow")
     plt.title('Heat Exchanger Heat Rate Comparison')
-#    plt.xlim(right=1000.)
-#    plt.ylim(top=1.)
     plt.xlabel('Input Variable Permutations')
     plt.ylabel('Heat Rate (W)')
     plt.legend()
     plt.savefig("test.png")
     plt.show()
     plt.close()
+    
+    
     
     
 
