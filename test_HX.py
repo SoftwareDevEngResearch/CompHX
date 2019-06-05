@@ -66,7 +66,7 @@ def test_q_fin_single():
     name = "input_single.yaml"
     
     test, _ = hx.q_fin(hx.log_mean_temp_diff_parallel(300,250,200,220),name)
-    assert test == [.5193580509078185]
+    assert test == [103.96772491081622]
     
 def test_q_max_ntu():
     assert hx.q_max_ntu(.1, 100, 10) == 9
@@ -137,13 +137,13 @@ def test_fin_conditions_parallel():
     
     test, _ = hx.q_fin(hx.log_mean_temp_diff_parallel(300,250,200,220),name)
     
-    assert test == pytest.approx((.5193580509078185,.5193580509078185,.5193580509078185,.5193580509078185,
-                            .5193580509078185,.5193580509078185,.5193580509078185,.5193580509078185))
+    assert test == pytest.approx((103.96772491081622,103.96772491081622,103.96772491081622,103.96772491081622,
+                            103.96772491081622,103.96772491081622,103.96772491081622,103.96772491081622))
 
 def test_fin_conditions_counter():
     name = "input_test.yaml"
     
     test, _ = hx.q_fin(hx.log_mean_temp_diff_counter(300,250,200,220),name)
     
-    assert test == pytest.approx((.5701715568247346,.5701715568247346,.5701715568247346,.5701715568247346,
-                            .5701715568247346,.5701715568247346,.5701715568247346,.5701715568247346))
+    assert test == pytest.approx((114.13982986,114.13982986,114.13982986,114.13982986,
+                            114.13982986,114.13982986,114.13982986,114.13982986))

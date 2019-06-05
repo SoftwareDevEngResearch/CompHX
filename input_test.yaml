@@ -19,3 +19,4 @@ fin_width:
   - 1
   - 1
 wall_k: 200
+wall_thickness: .01
