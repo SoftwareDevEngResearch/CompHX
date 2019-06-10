@@ -8,8 +8,13 @@ import matplotlib.pyplot as plt
 # This script works as an example of how to use the modules developed to solve a HX problem with provided boundary conditions
 
 def main():
+    """ This file is set up to run an example simulation of a finned and tubed heat exchanger for both counter flow and parallel flow.
+    
+    The results are plotted in scatter plots and saved to file for each HX type. 
+    """
     
     name = sys.argv[1]
+#    name = "input.yaml"
     
     
     hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out = bc.set_temp_boundary_conditions(name)
@@ -56,20 +61,41 @@ def main():
     
             
     
-    plt.plot(q_fin_counter, label = "Finned Counter-Flow")
-    plt.plot(q_fin_parallel, label = "Finned Parallel-Flow")
-    plt.plot(q_tube_counter, label = "Tubed Counter-Flow")
-    plt.plot(q_tube_parallel, label = "Tubed Parallel-Flow")
-    plt.title('Heat Exchanger Heat Rate Comparison')
+    plt.scatter(range(len(q_fin_counter)), q_fin_counter, label = "Finned Counter-Flow")
+    plt.title('Finned Counter-Flow')
     plt.xlabel('Input Variable Permutations')
     plt.ylabel('Heat Rate (W)')
     plt.legend()
-    plt.savefig("test.png")
+    plt.savefig("q_fin_counter.png")
     plt.show()
     plt.close()
     
+    plt.scatter(range(len(q_fin_parallel)), q_fin_parallel, label = "Finned Parallel Flow")
+    plt.title('Finned Parallel Flow')
+    plt.xlabel('Input Variable Permutations')
+    plt.ylabel('Heat Rate (W)')
+    plt.legend()
+    plt.savefig("q_fin_parallel.png")
+    plt.show()
+    plt.close()
     
+    plt.scatter(range(len(q_tube_counter)), q_tube_counter, label = "Tubed Counter-Flow")
+    plt.title('Tubed Counter-Flow')
+    plt.xlabel('Input Variable Permutations')
+    plt.ylabel('Heat Rate (W)')
+    plt.legend()
+    plt.savefig("q_tube_counter.png")
+    plt.show()
+    plt.close()
     
+    plt.scatter(range(len(q_tube_parallel)), q_tube_parallel, label = "Tubed Parallel Flow")
+    plt.title('Tubed Parallel-Flow')
+    plt.xlabel('Input Variable Permutations')
+    plt.ylabel('Heat Rate (W)')
+    plt.legend()
+    plt.savefig("q_tube_parallel.png")
+    plt.show()
+    plt.close()
     
 
 if __name__ == "__main__":

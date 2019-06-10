@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 
-import numpy as np
 import yaml
 
 def read_bc(name):
+    """ Reads in Boundary Condition data. 
+         
+    Args:
+        name (str): This is the name of the input file
+        
+    Returns:
+        dict: A dictionary of the boundary conditions and input values
+            
+    """
 
     with open(name, 'r') as f:
         inputs = yaml.safe_load(f)
@@ -11,7 +19,15 @@ def read_bc(name):
 
 
 def set_temp_boundary_conditions(name):
-    """ Set the Boundary Condition values to be used in other computations"""
+    """ Set the Boundary Condition values to be used in other computations
+    
+     Args:
+        name (str): This is the name of the input file
+        
+    Returns:
+        int, float (x4): The inlet and outlet temperatures for the hot and cold side of the HX
+
+    """
     
     inputs = read_bc(name)
     
@@ -24,7 +40,15 @@ def set_temp_boundary_conditions(name):
     return hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out
 
 def set_flow_boundary_conditions(name):
-    """Defining the flow boundary conditions"""
+    """Defining the flow boundary conditions
+    
+    Args:
+        name (str): This is the name of the input file
+            
+    Returns:
+        int, float (x2): The heat transfer coefficient and area for the hot and cold side of the HX
+        
+    """
     
     inputs = read_bc(name)
     
