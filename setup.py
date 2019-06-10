@@ -7,7 +7,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name='comp_hx',
+    name='CompHX',
     version='0.1.0',
     description='Analytical Heat Exchanger Solver',
     author='Tommy Moore',
