@@ -16,6 +16,10 @@ The CompHX package requires the following dependencies:
 - sympy
 - pyyaml
 
-To install the package, download the source code from https://github.com/tommy-moore22/CompHX and install using pip.
+To install the package from PyPI us the follwing command.
 
 	> pip install CompHX
+
+It can also be manually installed by downloading the source from ://github.com/tommy-moore22/CompHX and using the following command.
+
+	> python setup.py install
