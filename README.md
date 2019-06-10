@@ -1,6 +1,6 @@
 CompHX, version 0.1.0, 6/10/2019
 
-[![Build Status](https://travis-ci.org/tommy-moore22/CompHX.svg?branch=master)](https://travis-ci.org/tommy-moore22/CompHX)[![Build Status](https://travis-ci.org/tommy-moore22/CompHX.svg?branch=master)](https://travis-ci.org/tommy-moore22/CompHX)
+[![Build Status](https://travis-ci.org/tommy-moore22/CompHX.svg?branch=master)](https://travis-ci.org/tommy-moore22/CompHX)
 
 # About
 
