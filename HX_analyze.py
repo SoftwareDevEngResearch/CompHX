@@ -8,7 +8,7 @@ import yaml
 
 
 def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
-    """ Computes the Log-Mean-Temperatuer Difference (LMTD) for a counter-current HX. 
+    """ Computes the Log-Mean-Temperature Difference (LMTD) for a counter-current HX. 
      
     Args:
         temp_hot_in (int, float): Hot side inlet temeprature.
@@ -32,7 +32,7 @@ def log_mean_temp_diff_counter(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_o
     return (del_t_1 - del_t_2)/np.log(del_t_1/del_t_2)  
 
 def log_mean_temp_diff_parallel(temp_hot_in,temp_hot_out,temp_cold_in,temp_cold_out):
-    """ Computes the Log-Mean-Temperatuer Difference (LMTD) for a parallel HX 
+    """ Computes the Log-Mean-Temperature Difference (LMTD) for a parallel HX 
     
     Args:
         temp_hot_in (int, float): Hot side inlet temeprature.

@@ -3,7 +3,7 @@
 import yaml
 
 def read_bc(name):
-    """ Reads in Boundary Condition data. 
+    """ Reads in Boundary Condition data from a .yaml file. 
          
     Args:
         name (str): This is the name of the input file
@@ -40,7 +40,7 @@ def set_temp_boundary_conditions(name):
     return hot_temp_in, hot_temp_out, cold_temp_in, cold_temp_out
 
 def set_flow_boundary_conditions(name):
-    """Defining the flow boundary conditions
+    """Defines the flow boundary conditions
     
     Args:
         name (str): This is the name of the input file
