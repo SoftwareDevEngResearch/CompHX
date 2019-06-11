@@ -1,0 +1,19 @@
+case: example
+hot_temp_in: 100
+hot_temp_out: 85
+cold_temp_in: 30
+cold_temp_out: 55
+h_cold: 2
+area_cold: 1
+h_hot: 2
+area_hot: 1
+num_fins: 
+ - 25
+fin_thickness: 
+ - .001
+fin_length: 
+ - .008
+fin_width: 
+ - 1
+wall_k: 200
+wall_thickness: .01
